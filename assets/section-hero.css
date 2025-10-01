@@ -1,0 +1,12 @@
+/* Styles for Simple Hero section moved from inline section styles */
+.hero {
+  padding: 3.2rem 1rem;
+  text-align: center;
+}
+
+.hero__heading {
+  font-size: 3.2rem;
+  margin: 0 0 1rem 0;
+  color: rgba(var(--color-foreground), 0.95);
+}
+
