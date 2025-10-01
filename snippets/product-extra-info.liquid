@@ -1,0 +1,123 @@
+{%- comment -%}
+  يعرض معلومات إضافية من الـ Metafields و Metaobject
+  تأكد من namespace (حالياً مستخدم custom.*).
+{%- endcomment -%}
+
+{%- assign sustainability = product.metafields.custom.sustainability_score -%}
+{%- assign care = product.metafields.custom.care_instructions -%}
+{%- assign fabric = product.metafields.custom.fabric_composition -%}
+{%- assign size_obj = product.metafields.custom.size_chart_reference.value -%}
+
+<div class="ProductExtraInfo" id="ProductExtraInfo">
+  {%- if sustainability %}
+    {%- assign score = sustainability | plus: 0 -%}
+    {%- comment %}
+      تدرّج ألوان بسيط:
+      0-3 أحمر، 4-6 أصفر، 7-10 أخضر
+    {%- endcomment %}
+    {%- if score <= 3 -%}
+      {%- assign badge_color = 'is-low' -%}
+    {%- elsif score <= 6 -%}
+      {%- assign badge_color = 'is-mid' -%}
+    {%- else -%}
+      {%- assign badge_color = 'is-high' -%}
+    {%- endif -%}
+
+    <div class="PEI-row">
+      <span class="PEI-label">Sustainability:</span>
+      <span class="PEI-badge {{ badge_color }}">{{ score }}</span>
+    </div>
+  {%- endif %}
+
+  {%- if fabric %}
+    <div class="PEI-row">
+      <span class="PEI-label">Fabric:</span>
+      <span class="PEI-text">{{ fabric }}</span>
+    </div>
+  {%- endif %}
+
+  {%- if care %}
+    <div class="PEI-accordion" data-accordion>
+      <button type="button" class="PEI-accordion__trigger" aria-expanded="false">
+        <span>Care Instructions</span>
+        <span class="PEI-accordion__icon" aria-hidden="true">+</span>
+      </button>
+      <div class="PEI-accordion__panel" hidden>
+        <pre class="PEI-care-text">{{ care }}</pre>
+      </div>
+    </div>
+  {%- endif %}
+
+  {%- if size_obj %}
+    <div class="PEI-sizechart" data-sizechart>
+      <button type="button" class="PEI-sizechart__trigger" aria-expanded="false">
+        <span>Size Chart</span>
+        <span class="PEI-sizechart__icon" aria-hidden="true">📏</span>
+      </button>
+      <div class="PEI-sizechart__panel" hidden>
+        <ul class="PEI-sizechart__meta">
+          {%- if size_obj.category %}
+            <li><strong>Category:</strong> {{ size_obj.category }}</li>
+          {% endif %}
+          {%- if size_obj.gender %}
+            <li><strong>Gender:</strong> {{ size_obj.gender }}</li>
+          {% endif %}
+          {%- if size_obj.unit_system %}
+            <li><strong>Unit System:</strong> {{ size_obj.unit_system }}</li>
+          {% endif %}
+          {%- if size_obj.region %}
+            <li><strong>Region:</strong> {{ size_obj.region }}</li>
+          {% endif %}
+          {%- if size_obj.fit_tip %}
+            <li><strong>Fit tip:</strong> {{ size_obj.fit_tip }}</li>
+          {% endif %}
+          {%- if size_obj.notes %}
+            <li><strong>Notes:</strong> {{ size_obj.notes }}</li>
+          {% endif %}
+          {%- if size_obj.last_updated %}
+            <li><strong>Updated:</strong> {{ size_obj.last_updated | date: '%Y-%m-%d' }}</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  {%- endif %}
+</div>
+
+<script>
+  (function () {
+    function init(scope) {
+      if (!scope) scope = document;
+      // كل الأكورديونات (العناية والمقاسات)
+      scope.querySelectorAll('[data-accordion], [data-sizechart]').forEach(function (wrapper) {
+        const btn = wrapper.querySelector('button');
+        const panel = wrapper.querySelector('[class$="__panel"]');
+        if (!btn || !panel) return;
+
+        // لمنع تكرار ربط الحدث
+        if (btn.dataset.peiBound === '1') return;
+        btn.dataset.peiBound = '1';
+
+        btn.addEventListener('click', function () {
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          panel.hidden = expanded;
+
+          const icon = btn.querySelector('.PEI-accordion__icon, .PEI-sizechart__icon');
+          if (icon) {
+            // بدّل الرمز + ↔ −
+            if (icon.textContent.trim() === '+') icon.textContent = '−';
+            else if (icon.textContent.trim() === '−') icon.textContent = '+';
+          }
+        });
+      });
+    }
+
+    // تشغيل مباشر
+    init(document);
+
+    // دعم إعادة تحميل الأقسام داخل الـ Theme Editor
+    document.addEventListener('shopify:section:load', function (e) {
+      init(e.target);
+    });
+  })();
+</script>

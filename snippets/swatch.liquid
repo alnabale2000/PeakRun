@@ -20,6 +20,7 @@
   elsif swatch.color
     assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
   endif
+  # fallback class name (when no image/color defined) will be passed via parent through a variable "fallback_class"
 -%}
 
 <span
@@ -27,6 +28,6 @@
     class="swatch{% if shape == 'square' %} swatch--square{% endif %}"
     style="--swatch--background: {{ swatch_value }};{% if swatch_focal_point %} --swatch-focal-point: {{ swatch_focal_point }};{% endif %}"
   {% else %}
-    class="swatch swatch--unavailable{% if shape == 'square' %} swatch--square{% endif %}"
+    class="swatch swatch--unavailable{% if shape == 'square' %} swatch--square{% endif %}{% if fallback_class %} {{ fallback_class }}{% endif %}"
   {% endif %}
 ></span>

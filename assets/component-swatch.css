@@ -2,7 +2,6 @@
 .swatch {
   --swatch--size: var(--swatch-input--size, 4.4rem);
   --swatch--border-radius: var(--swatch-input--border-radius, 50%);
-
   display: block;
   width: var(--swatch--size);
   max-width: 100%;
@@ -11,15 +10,69 @@
   background-position: var(--swatch-focal-point, initial);
   background-size: cover;
   background-origin: border-box;
-  border: 0.1rem solid rgba(var(--color-foreground), 0.15);
+  border: none; /* إزالة الإطار الخارجي */
   border-radius: var(--swatch--border-radius);
+  position: relative;
+  transition: transform 0.15s ease;
 }
+
+.color-red { background:#D32F2F; }
+.color-orange { background:#FF9800; }
+.color-yellow { background:#FBC02D; }
+.color-green { background:#2E7D32; }
+.color-blue { background:#1976D2; }
+.color-purple { background:#7B1FA2; }
+.color-pink { background:#D81B60; }
+.color-teal { background:#00897B; }
+.color-cyan { background:#00ACC1; }
+.color-lime { background:#AFB42B; }
+.color-navy { background:#0D47A1; }
+.color-maroon { background:#800000; }
+.color-brown { background:#5D4037; }
+.color-silver { background:#C0C0C0; }
+.color-gold { background:#D4AF37; }
+.color-grey { background:#9E9E9E; }
+.color-white { background:#FFFFFF; box-shadow: 0 0 0 1px #d0d0d0 inset; }
+.color-black { background:#111; }
+
+/* Adjust swatch size for product form (override variable if needed) */
+.swatch-input__label .swatch {
+  --swatch--size: 3rem;
+}
+
 
 .swatch--square {
   --swatch--border-radius: var(--swatch-input--border-radius, 0.2rem);
 }
 
 .swatch--unavailable {
-  border-style: dashed;
+  border-style: solid;
   border-color: rgba(var(--color-foreground), 0.5);
 }
+
+/* إخفاء النص */
+.swatch-input__label {
+  font-size: 0; /* يخفي النص بدون حذف */
+  padding: 0; /* إزالة أي فراغ داخلي */
+  line-height: 0; /* يمنع أي مساحة عمودية إضافية */
+  background: transparent; /* بدون خلفية بيضاء خارج الدائرة */
+}
+
+.swatch-input__label .swatch-input__value-text {
+  display: none; /* يخفي العنصر النصي */
+}
+
+/* حالة التحديد */
+/* تأثير اختيار بدون إطار خارجي: تكبير بسيط */
+.swatch-input__label[aria-checked="true"] .swatch,
+.swatch-input__input:checked + .swatch-input__label .swatch {
+  transform: scale(1.2);
+}
+
+/* حالة غير متاحة */
+.swatch-input__label.disabled,
+.swatch-input__input:disabled + .swatch-input__label {
+  opacity: .35;
+  cursor: not-allowed;
+}
+

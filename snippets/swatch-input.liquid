@@ -47,6 +47,12 @@
   title="{{ value }}"
   class="swatch-input__label{% if shape == 'square' %} swatch-input__label--square{% endif %}"
 >
-  {% render 'swatch', swatch: swatch, shape: shape %}
-  {{ help_text }}
+  {%- liquid
+    assign fallback_class = ''
+    unless swatch.image or swatch.color
+      assign fallback_class = 'color-' | append: value | handle
+    endunless
+  -%}
+  {% render 'swatch', swatch: swatch, shape: shape, fallback_class: fallback_class %}
+  <span class="visually-hidden">{{ help_text }}</span>
 </label>
